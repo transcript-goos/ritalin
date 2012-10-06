@@ -30,5 +30,8 @@ Openfireの設定について(for Mac)
     1. Openfireを実行する
     2. localhost:9090にアクセス
     3. 設定項目埋めていく
+        * JDBC
+            * class -> org.sqlite.JDBC
+            * url -> jdbc:sqlite:openfire.sqlite3
         * 中途半端にopenfire/confopenfire.xmlが作られるとぬるポになるので注意
         * 削除すればおk
