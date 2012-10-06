@@ -4,3 +4,4 @@
 * PArt IIIのAuctionSniperを写経
 * C#で
 * Mac上のMonoなので、とりあえずGUIは避けて
+
