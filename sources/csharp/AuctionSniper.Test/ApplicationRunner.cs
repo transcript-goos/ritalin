@@ -2,6 +2,8 @@ using System;
 
 using AuctionSniper.Console;
 
+using NUnit.Framework;
+
 namespace AuctionSniper.Test {
     internal class ApplicationRunner {
         public static readonly string SniperId = "sniper";
@@ -36,14 +38,20 @@ namespace AuctionSniper.Test {
 
         public ConsoleAuctionSniperDriver(string inId, string inPassword, int inTimeout) {
             mApp = new AuctionSniperConsole();
+
+            Assert.That(mApp.Status, Is.EqualTo(SniperStatus.Disconnected));
+
+            mApp.RunShell(new AuctionCredencial {Id = inId, Password = inPassword});
         }
 
         public void ShowSniperStatus(SniperStatus inStatus) {
-            mApp.ShowStatus(inStatus);
+            Assert.That(mApp.Status, Is.EqualTo(inStatus));
         }
 
         public void Dispose() {
             mApp.Terminate();
+
+            Assert.That(mApp.Status, Is.EqualTo(SniperStatus.Disconnected));
         }
     }
 }
