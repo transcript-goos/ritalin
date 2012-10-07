@@ -10,7 +10,7 @@ namespace AuctionSniper.Console {
         }
 
         public void RunShell(AuctionCredencial inCredencial) {
-
+            this.Status = SniperStatus.Joining;
         }
 
         public void Execute(string[] inArgs) {
