@@ -29,3 +29,9 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 #ignore thumbnails created by Mac OS X
 .DS_Store
+
+sources/agsxmpp/**/*
+sources/agsxmpp/agsxmpp/agsXMPP2008.csproj
+*.dll.config
+*.dll.mdb
+test-results
