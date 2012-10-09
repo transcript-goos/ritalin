@@ -12,7 +12,7 @@ namespace AuctionSniper.Test {
         private IAuctionSniperDriver mDriver;
 
         public void StartBiddingIn(FakeAuctionServer inAuction) {
-            mDriver = new ConsoleAuctionSniperDriver(SniperId, SniperPassword, 1000);
+            mDriver = new ConsoleAuctionSniperDriver(inAuction.HostName, SniperId, SniperPassword, 1000);
             mDriver.ShowSniperStatus(SniperStatus.Joining);
         }
 
@@ -36,12 +36,15 @@ namespace AuctionSniper.Test {
     internal class ConsoleAuctionSniperDriver : IAuctionSniperDriver {
         private AuctionSniperConsole mApp;
 
-        public ConsoleAuctionSniperDriver(string inId, string inPassword, int inTimeout) {
+        public ConsoleAuctionSniperDriver(string inHostName, string inId, string inPassword, int inTimeout) {
             mApp = new AuctionSniperConsole();
 
             Assert.That(mApp.Status, Is.EqualTo(SniperStatus.Disconnected));
 
-            mApp.RunShell(new AuctionCredencial {Id = inId, Password = inPassword});
+            mApp.RunShell(
+                inHostName,
+                new AuctionCredencial {Id = TestHelper.ToJId (inId), Password = inPassword}
+            );
         }
 
         public void ShowSniperStatus(SniperStatus inStatus) {

@@ -5,7 +5,7 @@ namespace AuctionSniper.Console {
         public static void Main(string[] args) {
             var console = new AuctionSniperConsole();
 
-            console.Execute(args);
+            console.RunShell("", new AuctionCredencial());
         }
     }
 }

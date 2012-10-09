@@ -10,13 +10,9 @@ namespace AuctionSniper.Test {
 
         [TearDown]
         public void StopAuction() {
+            mApp.Stop();
             mAuction.Stop();
         } 
-
-        [TearDown]
-        public void StopApplication() {
-            mApp.Stop();
-        }
 
         [Test]
         public void _オークションが開始されてから終わるまでの間のテスト() {

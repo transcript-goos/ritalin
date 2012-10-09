@@ -37,14 +37,20 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="agsXMPP">
-      <HintPath>..\packages\agsXMPP\lib\agsXMPP.dll</HintPath>
+    <Reference Include="zlib.net">
+      <HintPath>..\packages\jabber.net\lib\zlib.net.dll</HintPath>
     </Reference>
+    <Reference Include="jabber-net">
+      <HintPath>..\packages\jabber.net\lib\jabber-net.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AuctionSniperEndToEndTest.cs" />
     <Compile Include="ApplicationRunner.cs" />
     <Compile Include="FakeAuctionServer.cs" />
+    <Compile Include="TestHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AuctionSniper.Console\AuctionSniper.Console.csproj">
