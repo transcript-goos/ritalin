@@ -51,6 +51,7 @@
     <Compile Include="ApplicationRunner.cs" />
     <Compile Include="FakeAuctionServer.cs" />
     <Compile Include="TestHelper.cs" />
+    <Compile Include="MessageQueue.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AuctionSniper.Console\AuctionSniper.Console.csproj">

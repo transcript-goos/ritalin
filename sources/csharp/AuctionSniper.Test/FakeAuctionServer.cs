@@ -19,6 +19,8 @@ namespace AuctionSniper.Test {
 
         private MessageQueue mQueue = new MessageQueue();
 
+        private JID mChat;
+
         public FakeAuctionServer(string inItemId) {
             this.ItemId = inItemId;
             this.Connection = new JabberClient();
@@ -40,19 +42,37 @@ namespace AuctionSniper.Test {
 
             mQueue.AssignEvents(this.Connection);
 
-            JabberClientHelper.ConnectServer(this.Connection);
+            this.Connection.Connect();
+            TestHelper.WaitConnectingTo(this.Connection);
         }
 
         public void HasReceivedJoinRequestFromSniper() {
-            mQueue.ReceiveMessage();
+            mChat = this.ReceiveMessage().From;
+        }
+        
+        private Message ReceiveMessage() {
+            Message result;
+            
+            Assert.That(mQueue.TryPoll(TimeSpan.FromSeconds(5), out result), Is.True,  "5秒間に何らかのメッセージが送られてこなければならない");
+            Assert.That(result, Is.Not.Null);
+            
+            return result;
         }
 
         public void AnnounceClosed() {
-            this.Connection.Write(new Message(new XmlDocument()));
+            var msg = new Message(new XmlDocument()) {
+                Type = MessageType.chat, 
+                To = mChat,
+            };
+                
+            this.Connection.Write(msg);
         }
 
         public void Stop() {
-            JabberClientHelper.DisconnectServer(this.Connection);
+            if (! this.Connection.IsAuthenticated) return;
+
+            this.Connection.Close();
+            TestHelper.WaitDisconnectingTo(this.Connection);
         }
 
         public JabberClient Connection {get; private set;}
@@ -63,56 +83,5 @@ namespace AuctionSniper.Test {
             }
         }
     }
-
-    internal class MessageQueue {
-        private ConcurrentQueue<Message> mMessages = new ConcurrentQueue<Message>();
-        private object mLock = new object();
-
-        public void AssignEvents(JabberClient inConn) {
-            inConn.OnMessage += (s, msg) => {
-//                if (msg.Body != null) 
-                {
-                    lock (mLock) {
-                        mMessages.Enqueue(msg);
-
-                        Monitor.PulseAll(mLock);
-                    }
-                }
-            };
-        }
-
-        public bool TryPoll(TimeSpan inTimeout, TimeSpan inWait, out Message outItem) {
-            outItem = null;
-
-            var endTime = DateTime.Now.Add(inTimeout);
-            
-            while (DateTime.Now < endTime) {
-                lock (mLock) {                
-                    if (mMessages.TryDequeue(out outItem)) {
-                        return true;
-                    }
-
-                    Monitor.Wait(mLock, inWait);
-                }
-            }
-            
-            return false;
-        }
-
-        public Message ReceiveMessage() {
-            Message result;
-
-            Assert.That(this.TryPoll(TimeSpan.FromSeconds(5), out result), Is.True,  "5秒間に何らかのメッセージが送られてこなければならない");
-            Assert.That(result, Is.Not.Null);
-
-            return result;
-        }
-    }
-
-    public static class QueueExtensions {
-        internal static bool TryPoll(this MessageQueue inSelf, TimeSpan inTimeout, out Message outItem) {
-            return inSelf.TryPoll(inTimeout, TimeSpan.FromMilliseconds(100), out outItem);
-        }
-    } 
 }
 

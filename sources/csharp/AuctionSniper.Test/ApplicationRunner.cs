@@ -1,5 +1,7 @@
 using System;
 
+using jabber.protocol.client;
+
 using AuctionSniper.Console;
 
 using NUnit.Framework;
@@ -17,6 +19,7 @@ namespace AuctionSniper.Test {
         }
 
         public void ShowsSniperHasLostAuction() {
+            mDriver.HasReceivedMessageFromServer();
             mDriver.ShowSniperStatus(SniperStatus.Lost);
         }
 
@@ -28,16 +31,21 @@ namespace AuctionSniper.Test {
         }
     }
 
-    internal interface IAuctionSniperDriver {
+    internal interface IAuctionSniperDriver {        
+        void HasReceivedMessageFromServer();       
         void ShowSniperStatus(SniperStatus inStatus);
         void Dispose();
     }
 
     internal class ConsoleAuctionSniperDriver : IAuctionSniperDriver {
         private AuctionSniperConsole mApp;
+        private MessageQueue mQueue;
 
         public ConsoleAuctionSniperDriver(string inHostName, string inId, string inPassword, int inTimeout) {
             mApp = new AuctionSniperConsole();
+
+            mQueue = new MessageQueue();
+            mQueue.AssignEvents(mApp.Connection);
 
             Assert.That(mApp.Status, Is.EqualTo(SniperStatus.Disconnected));
 
@@ -45,14 +53,24 @@ namespace AuctionSniper.Test {
                 inHostName,
                 new AuctionCredencial {Id = TestHelper.ToJId (inId), Password = inPassword}
             );
+
+            TestHelper.WaitConnectingTo(mApp.Connection);           
         }
 
-        public void ShowSniperStatus(SniperStatus inStatus) {
+        void IAuctionSniperDriver.HasReceivedMessageFromServer() {
+            Message msg;
+            Assert.That(mQueue.TryPoll(TimeSpan.FromSeconds(5), out msg), Is.True, "expired at 5 seconds");
+            Assert.That(msg, Is.Not.Null);
+        }
+
+        void IAuctionSniperDriver.ShowSniperStatus(SniperStatus inStatus) {
             Assert.That(mApp.Status, Is.EqualTo(inStatus));
         }
 
-        public void Dispose() {
+        void IAuctionSniperDriver.Dispose() {
             mApp.Terminate();
+
+            TestHelper.WaitDisconnectingTo(mApp.Connection);
 
             Assert.That(mApp.Status, Is.EqualTo(SniperStatus.Disconnected));
         }
