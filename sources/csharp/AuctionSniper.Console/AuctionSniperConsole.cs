@@ -5,8 +5,6 @@ using jabber;
 using jabber.client;
 using jabber.protocol.client;
 
-using AuctionSniper.Console.Utils;
-
 namespace AuctionSniper.Console {
 
 

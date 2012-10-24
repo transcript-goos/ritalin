@@ -7,8 +7,6 @@ using jabber;
 using jabber.client;
 using jabber.protocol.client;
 
-using AuctionSniper.Console.Utils;
-
 using NUnit.Framework;
 
 namespace AuctionSniper.Test {

@@ -47,7 +47,6 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AuctionSniperConsole.cs" />
     <Compile Include="SniperStatus.cs" />
-    <Compile Include="Utils\JabberClientHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

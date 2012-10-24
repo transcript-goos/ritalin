@@ -4,7 +4,7 @@ using NUnit.Framework;
 
 namespace AuctionSniper.Test {
     [TestFixture]
-    public class AuctionSniperEndToEndTest {
+    public class _オークションが開始されてから終わるまでの間のTestSuite {
         private FakeAuctionServer mAuction = new FakeAuctionServer("item-54321");
         private ApplicationRunner mApp = new ApplicationRunner();
 
@@ -15,7 +15,7 @@ namespace AuctionSniper.Test {
         } 
 
         [Test]
-        public void _オークションが開始されてから終わるまでの間のテスト() {
+        public void _オークションに参加表明したあと何もせず終わるまで待つだけ() {
             // Step 1            
             // オークションに商品が出品されている
             mAuction.StartSellingItem(); 
@@ -32,6 +32,11 @@ namespace AuctionSniper.Test {
             // オークションスナイパーは、悪札に失敗したことを表示する
             mApp.ShowsSniperHasLostAuction();
         }
+
+        [Test]
+        public void _一度だけBidするけど結局落札し損ねるの巻() {
+
+        } 
     }
 }
 
