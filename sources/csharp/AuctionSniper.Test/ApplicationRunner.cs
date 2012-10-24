@@ -1,5 +1,6 @@
 using System;
 
+using jabber;
 using jabber.protocol.client;
 
 using AuctionSniper.Console;
@@ -18,6 +19,10 @@ namespace AuctionSniper.Test {
             mDriver.ShowSniperStatus(SniperStatus.Joining);
         }
 
+        public void HasShownSniperInBidding() {
+            mDriver.ShowSniperStatus(SniperStatus.Bidding);
+        }
+
         public void ShowsSniperHasLostAuction() {
             mDriver.HasReceivedMessageFromServer();
             mDriver.ShowSniperStatus(SniperStatus.Lost);
@@ -29,12 +34,20 @@ namespace AuctionSniper.Test {
                 mDriver = null;            
             }
         }
+
+        public JID JId {
+            get {
+                return mDriver.JId;
+            }
+        }
     }
 
     internal interface IAuctionSniperDriver {        
         void HasReceivedMessageFromServer();       
         void ShowSniperStatus(SniperStatus inStatus);
         void Dispose();
+
+        JID JId {get;}
     }
 
     internal class ConsoleAuctionSniperDriver : IAuctionSniperDriver {
@@ -49,9 +62,11 @@ namespace AuctionSniper.Test {
 
             Assert.That(mApp.Status, Is.EqualTo(SniperStatus.Disconnected));
 
+            this.JId = TestHelper.ToJId(inId);
+
             mApp.RunShell(
                 inHostName,
-                new AuctionCredencial {Id = TestHelper.ToJId (inId), Password = inPassword}
+                    new AuctionCredencial {Id = this.JId, Password = inPassword}
             );
 
             TestHelper.WaitConnectingTo(mApp.Connection);           
@@ -74,6 +89,8 @@ namespace AuctionSniper.Test {
 
             Assert.That(mApp.Status, Is.EqualTo(SniperStatus.Disconnected));
         }
+
+        public JID JId {get; private set;}
     }
 }
 

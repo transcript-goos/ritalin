@@ -38,6 +38,8 @@ namespace AuctionSniper.Console {
                 var msg = new Message(new XmlDocument()) {
                     Type = MessageType.chat, 
                     To = this.ToJid("item-54321", this.Connection), 
+                    //  ToDo: AuctionSniper.Console.MainClassに強依存するのが気に入らない。後で治るのかこれ？
+                    Body = MainClass.JoinCommandFormat,
                 };
 
                 this.Connection.Write(msg);

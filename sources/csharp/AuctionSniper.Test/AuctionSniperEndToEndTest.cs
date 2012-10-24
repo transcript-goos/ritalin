@@ -24,7 +24,7 @@ namespace AuctionSniper.Test {
             mApp.StartBiddingIn(mAuction);
             // Step 3
             // オークションは、オークションスナイパーからのリクエストを受信する
-            mAuction.HasReceivedJoinRequestFromSniper();
+            mAuction.HasReceivedJoinRequestFrom(mApp.JId);
             // Step 4 
             // オークションは、終了を宣言する
             mAuction.AnnounceClosed();
@@ -35,8 +35,25 @@ namespace AuctionSniper.Test {
 
         [Test]
         public void _一度だけBidするけど結局落札し損ねるの巻() {
-
-        } 
+            mAuction.StartSellingItem();
+            // Step 1
+            //  スナイパーからの参加を待つ
+            mApp.StartBiddingIn(mAuction);
+            mAuction.HasReceivedJoinRequestFrom(mApp.JId);
+            // Step 2
+            // 現在の価格、次回増額、現在の落札者を通知する
+            mAuction.ReportPrice(1000, 98, "other bidder");
+            // Step 3
+            // 入札中になったかどうかチェックする
+            mApp.HasShownSniperInBidding();
+            // Step 4
+            // スナイパーからの入札を受信したことをチェックする
+            mAuction.HasReceivedBid(1098,  mApp.JId);
+            // Step 5
+            // 落札に失敗したかどうかチェックする
+            mAuction.AnnounceClosed();
+            mApp.ShowsSniperHasLostAuction();
+        }           
     }
 }
 

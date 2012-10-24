@@ -44,17 +44,38 @@ namespace AuctionSniper.Test {
             TestHelper.WaitConnectingTo(this.Connection);
         }
 
-        public void HasReceivedJoinRequestFromSniper() {
-            mChat = this.ReceiveMessage().From;
+        public void HasReceivedJoinRequestFrom(JID inJId) {
+            mChat = this.ReceiveMessage(inJId, Is.Not.Empty).From;
         }
-        
-        private Message ReceiveMessage() {
+
+        public void HasReceivedBid(int inBidPrice, string inSniperJId) {
+            this.ReceiveMessage(
+                inSniperJId,
+                //  ToDo: AuctionSniper.Console.MainClassに強依存するのが気に入らない。後で治るのかこれ？
+                Is.EqualTo(string.Format(AuctionSniper.Console.MainClass.BidCommandFormat, inBidPrice))
+            );
+        }
+
+        private Message ReceiveMessage(JID inJId, NUnit.Framework.Constraints.Constraint inMatcher) {
             Message result;
             
             Assert.That(mQueue.TryPoll(TimeSpan.FromSeconds(5), out result), Is.True,  "5秒間に何らかのメッセージが送られてこなければならない");
             Assert.That(result, Is.Not.Null);
-            
+            Assert.That(result.Body, inMatcher);
+            Assert.That(result.From.ToString(), Is.EqualTo(inJId.ToString()));
+
             return result;
+        }
+
+        public void ReportPrice(int inPrice, int inInc,  string inBidder) {
+            var msg = new Message(new XmlDocument()) {
+                Type = MessageType.chat, 
+                To = mChat,
+                //  ToDo: AuctionSniper.Console.MainClassに強依存するのが気に入らない。後で治るのかこれ？
+                Body = string.Format(AuctionSniper.Console.MainClass.JoinCommandFormat, inPrice, inInc, inBidder),
+            };
+            
+            this.Connection.Write(msg);             
         }
 
         public void AnnounceClosed() {
