@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSniper.Test", "AuctionSniper.Test\AuctionSniper.Test.csproj", "{AFCB00FA-1029-4451-8588-E2BE0D3C7B6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSniper.E2E.Test", "AuctionSniper.E2E.Test\AuctionSniper.E2E.Test.csproj", "{AFCB00FA-1029-4451-8588-E2BE0D3C7B6D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSniper.Console", "AuctionSniper.Console\AuctionSniper.Console.csproj", "{950B96D0-45E3-46F3-A872-DD9306ECC983}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSniper.Test", "AuctionSniper.Test\AuctionSniper.Test.csproj", "{51D6BD5E-3627-4503-85B8-688F63038A20}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuctionSniper.Core", "AuctionSniper.Core\AuctionSniper.Core.csproj", "{12EE2AF1-7742-4743-A0BA-2E740D94C6D2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,6 +15,14 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12EE2AF1-7742-4743-A0BA-2E740D94C6D2}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{12EE2AF1-7742-4743-A0BA-2E740D94C6D2}.Debug|x86.Build.0 = Debug|Any CPU
+		{12EE2AF1-7742-4743-A0BA-2E740D94C6D2}.Release|x86.ActiveCfg = Release|Any CPU
+		{12EE2AF1-7742-4743-A0BA-2E740D94C6D2}.Release|x86.Build.0 = Release|Any CPU
+		{51D6BD5E-3627-4503-85B8-688F63038A20}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{51D6BD5E-3627-4503-85B8-688F63038A20}.Debug|x86.Build.0 = Debug|Any CPU
+		{51D6BD5E-3627-4503-85B8-688F63038A20}.Release|x86.ActiveCfg = Release|Any CPU
+		{51D6BD5E-3627-4503-85B8-688F63038A20}.Release|x86.Build.0 = Release|Any CPU
 		{950B96D0-45E3-46F3-A872-DD9306ECC983}.Debug|x86.ActiveCfg = Debug|x86
 		{950B96D0-45E3-46F3-A872-DD9306ECC983}.Debug|x86.Build.0 = Debug|x86
 		{950B96D0-45E3-46F3-A872-DD9306ECC983}.Release|x86.ActiveCfg = Release|x86
@@ -21,6 +33,6 @@ Global
 		{AFCB00FA-1029-4451-8588-E2BE0D3C7B6D}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = AuctionSniper.Test\AuctionSniper.Test.csproj
+		StartupItem = AuctionSniper.E2E.Test\AuctionSniper.E2E.Test.csproj
 	EndGlobalSection
 EndGlobal

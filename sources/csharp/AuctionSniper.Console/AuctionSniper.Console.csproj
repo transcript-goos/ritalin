@@ -35,12 +35,12 @@
     <Reference Include="jabber-net">
       <HintPath>..\packages\jabber.net\lib\jabber-net.dll</HintPath>
     </Reference>
-    <Reference Include="zlib.net">
-      <HintPath>..\packages\jabber.net\lib\zlib.net.dll</HintPath>
-    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="zlib.net">
+      <HintPath>..\packages\jabber.net\lib\zlib.net.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Main.cs" />

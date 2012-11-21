@@ -2,15 +2,15 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{51D6BD5E-3627-4503-85B8-688F63038A20}</ProjectGuid>
+    <ProjectGuid>{AFCB00FA-1029-4451-8588-E2BE0D3C7B6D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>AuctionSniper.Test</RootNamespace>
     <AssemblyName>AuctionSniper.Test</AssemblyName>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
@@ -18,42 +18,45 @@
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>False</ConsolePause>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
     <Optimize>True</Optimize>
     <OutputPath>bin\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
     <ConsolePause>False</ConsolePause>
   </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Reference Include="System" />
     <Reference Include="nunit.framework">
       <HintPath>..\packages\nunit.framework\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="zlib.net">
+      <HintPath>..\packages\jabber.net\lib\zlib.net.dll</HintPath>
     </Reference>
     <Reference Include="jabber-net">
       <HintPath>..\packages\jabber.net\lib\jabber-net.dll</HintPath>
     </Reference>
-    <Reference Include="zlib.net">
-      <HintPath>..\packages\jabber.net\lib\zlib.net.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
-    <Reference Include="Rhino.Mocks">
-      <HintPath>..\packages\Rhino\lib\Rhino.Mocks.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="AuctionMessageTranslateTest.cs" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AuctionSniper.Core\AuctionSniper.Core.csproj">
-      <Project>{12EE2AF1-7742-4743-A0BA-2E740D94C6D2}</Project>
-      <Name>AuctionSniper.Core</Name>
+    <Compile Include="AuctionSniperEndToEndTest.cs" />
+    <Compile Include="ApplicationRunner.cs" />
+    <Compile Include="FakeAuctionServer.cs" />
+    <Compile Include="TestHelper.cs" />
+    <Compile Include="MessageQueue.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AuctionSniper.Console\AuctionSniper.Console.csproj">
+      <Project>{950B96D0-45E3-46F3-A872-DD9306ECC983}</Project>
+      <Name>AuctionSniper.Console</Name>
     </ProjectReference>
   </ItemGroup>
 </Project>

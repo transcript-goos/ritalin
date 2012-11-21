@@ -5,10 +5,10 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>10.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{51D6BD5E-3627-4503-85B8-688F63038A20}</ProjectGuid>
+    <ProjectGuid>{12EE2AF1-7742-4743-A0BA-2E740D94C6D2}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>AuctionSniper.Test</RootNamespace>
-    <AssemblyName>AuctionSniper.Test</AssemblyName>
+    <RootNamespace>AuctionSniper.Core</RootNamespace>
+    <AssemblyName>AuctionSniper.Core</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -30,9 +30,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\packages\nunit.framework\lib\nunit.framework.dll</HintPath>
-    </Reference>
     <Reference Include="jabber-net">
       <HintPath>..\packages\jabber.net\lib\jabber-net.dll</HintPath>
     </Reference>
@@ -40,20 +37,9 @@
       <HintPath>..\packages\jabber.net\lib\zlib.net.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    <Reference Include="Rhino.Mocks">
-      <HintPath>..\packages\Rhino\lib\Rhino.Mocks.dll</HintPath>
-    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AuctionMessageTranslator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="AuctionMessageTranslateTest.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\AuctionSniper.Core\AuctionSniper.Core.csproj">
-      <Project>{12EE2AF1-7742-4743-A0BA-2E740D94C6D2}</Project>
-      <Name>AuctionSniper.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
