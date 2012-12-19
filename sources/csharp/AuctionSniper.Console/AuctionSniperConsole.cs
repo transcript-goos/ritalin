@@ -5,49 +5,57 @@ using jabber;
 using jabber.client;
 using jabber.protocol.client;
 
+using AuctionSniper.Core;
+
 namespace AuctionSniper.Console {
-
-
-    public class AuctionSniperConsole {
+    public class AuctionSniperConsole : IAuctionEventListener {
         public static readonly string AuctionResource = "Auction";
         public static readonly string ItemIdAsLogin = "auction-{0}";
 
+        public static readonly string JoinCommandFormat = "SOLVersion: 1.1; Event: PRICE; CurrentPrice: {0}; Increment: {1}; Bidder: {2}";
+        public static readonly string BidCommandFormat = "SOLVersion: 1.1; Command: BID; Price: {0}";
+
         public AuctionSniperConsole() {
-            this.Connection = new JabberClient();        
-            this.Connection.AutoLogin = true;
-            this.Connection.AutoStartTLS = false;
         }
 
         private void ShowStatus(SniperStatus inStatus) {
+            this.Status = inStatus;
+
             System.Console.WriteLine("status changed to: {0}", inStatus);
         }
 
-        public void RunShell(string inHostName, AuctionCredencial inCredencial) {
-            this.Connection.User = inCredencial.Id.User;
-            this.Connection.Server = inCredencial.Id.Server;
-            this.Connection.Resource = inCredencial.Id.Resource;
-            this.Connection.Password = inCredencial.Password;
-            this.Connection.Port = 5222;
-            this.Connection.NetworkHost = inHostName;
+        public void RunShell(string inHostName, AuctionCredencial inCredencial, string inItemId) {
+            this.JoinAuction(this.Connection(inHostName, inCredencial), inItemId);
+        }
 
-            this.Connection.OnMessage += (s, m) => {
-                this.Status = SniperStatus.Lost;
-            };
+        private void JoinAuction(JabberClient inConnection, string inItemId) {
+            this.NotToBeGCD = new Chat(this.ToJid(inItemId, inConnection), inConnection, new AuctionMessageTranslator(this));
 
-            this.Connection.OnAuthenticate += (s) => {
-                var msg = new Message(new XmlDocument()) {
-                    Type = MessageType.chat, 
-                    To = this.ToJid("item-54321", this.Connection), 
-                    //  ToDo: AuctionSniper.Console.MainClassに強依存するのが気に入らない。後で治るのかこれ？
-                    Body = MainClass.JoinCommandFormat,
-                };
+            if (this.BeginJoining != null) {
+                this.BeginJoining(this.NotToBeGCD.Connection);
+            }
+            
+            inConnection.Connect();
+            ConsoleAppHelper.WaitConnectingTo(inConnection);  
 
-                this.Connection.Write(msg);
+            this.NotToBeGCD.SendMessage(new Message(new XmlDocument()) {Body = JoinCommandFormat});
+            
+            this.ShowStatus(SniperStatus.Joining);
+        }
 
-                this.Status = SniperStatus.Joining;
-            };
+        private JabberClient Connection(string inHostName, AuctionCredencial inCredencial) {
+            var connection = new JabberClient();
 
-            this.Connection.Connect();
+            connection.AutoLogin = true;
+            connection.AutoStartTLS = false;
+            connection.User = inCredencial.Id.User;
+            connection.Server = inCredencial.Id.Server;
+            connection.Resource = inCredencial.Id.Resource;
+            connection.Password = inCredencial.Password;
+            connection.Port = 5222;
+            connection.NetworkHost = inHostName;
+
+            return connection;
         }
 
         private JID ToJid(string inItemId, JabberClient inConnection) {
@@ -59,18 +67,26 @@ namespace AuctionSniper.Console {
         }
 
         public void Terminate() {
-            if (! this.Connection.IsAuthenticated) return;
+            if (! this.NotToBeGCD.Connection.IsAuthenticated) return;
 
-            this.Connection.OnDisconnect += (s) => {
-                this.Status = SniperStatus.Disconnected;
-            };
+            this.NotToBeGCD.Connection.Close();
+            ConsoleAppHelper.WaitDisconnectingTo(this.NotToBeGCD.Connection);
 
-            this.Connection.Close();
+            this.ShowStatus(SniperStatus.Disconnected);
         }
 
-        public JabberClient Connection { get; private set; }
+        void IAuctionEventListener.AuctionClosed() {
+            this.ShowStatus(SniperStatus.Lost);
+        }
+
+        void IAuctionEventListener.CurrentPrice(int inPrice, int inIncrement) {
+        }
+
+        public Chat NotToBeGCD { get; private set; }
         
         public SniperStatus Status {get; private set;}
+
+        public event Action<JabberClient> BeginJoining;
     }
 
     public struct AuctionCredencial {

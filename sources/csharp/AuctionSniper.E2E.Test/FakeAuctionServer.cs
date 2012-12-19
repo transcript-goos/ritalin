@@ -7,6 +7,9 @@ using jabber;
 using jabber.client;
 using jabber.protocol.client;
 
+using AuctionSniper.Core;
+using AuctionSniper.Console;
+
 using NUnit.Framework;
 
 namespace AuctionSniper.Test {
@@ -17,7 +20,7 @@ namespace AuctionSniper.Test {
 
         private MessageQueue mQueue = new MessageQueue();
 
-        private JID mChat;
+        private Chat mChat;
 
         public FakeAuctionServer(string inItemId) {
             this.ItemId = inItemId;
@@ -41,18 +44,18 @@ namespace AuctionSniper.Test {
             mQueue.AssignEvents(this.Connection);
 
             this.Connection.Connect();
-            TestHelper.WaitConnectingTo(this.Connection);
+            ConsoleAppHelper.WaitConnectingTo(this.Connection);
         }
 
         public void HasReceivedJoinRequestFrom(JID inJId) {
-            mChat = this.ReceiveMessage(inJId, Is.Not.Empty).From;
+            mChat = new Chat(this.ReceiveMessage(inJId, Is.Not.Empty).From, this.Connection, null);
         }
 
         public void HasReceivedBid(int inBidPrice, string inSniperJId) {
             this.ReceiveMessage(
                 inSniperJId,
                 //  ToDo: AuctionSniper.Console.MainClassに強依存するのが気に入らない。後で治るのかこれ？
-                Is.EqualTo(string.Format(AuctionSniper.Console.MainClass.BidCommandFormat, inBidPrice))
+                Is.EqualTo(string.Format(AuctionSniperConsole.BidCommandFormat, inBidPrice))
             );
         }
 
@@ -69,29 +72,26 @@ namespace AuctionSniper.Test {
 
         public void ReportPrice(int inPrice, int inInc,  string inBidder) {
             var msg = new Message(new XmlDocument()) {
-                Type = MessageType.chat, 
-                To = mChat,
                 //  ToDo: AuctionSniper.Console.MainClassに強依存するのが気に入らない。後で治るのかこれ？
-                Body = string.Format(AuctionSniper.Console.MainClass.JoinCommandFormat, inPrice, inInc, inBidder),
+                Body = string.Format(AuctionSniperConsole.JoinCommandFormat, inPrice, inInc, inBidder),
             };
             
-            this.Connection.Write(msg);             
+            mChat.SendMessage(msg);             
         }
 
         public void AnnounceClosed() {
             var msg = new Message(new XmlDocument()) {
-                Type = MessageType.chat, 
-                To = mChat,
+                Body = "SOLVersion: 1.1; Event: CLOSE;",
             };
                 
-            this.Connection.Write(msg);
+            mChat.SendMessage(msg);
         }
 
         public void Stop() {
             if (! this.Connection.IsAuthenticated) return;
 
             this.Connection.Close();
-            TestHelper.WaitDisconnectingTo(this.Connection);
+            ConsoleAppHelper.WaitDisconnectingTo(this.Connection);
         }
 
         public JabberClient Connection {get; private set;}

@@ -15,7 +15,11 @@ namespace AuctionSniper.Test {
         private IAuctionSniperDriver mDriver;
 
         public void StartBiddingIn(FakeAuctionServer inAuction) {
-            mDriver = new ConsoleAuctionSniperDriver(inAuction.HostName, SniperId, SniperPassword, 1000);
+            mDriver = new ConsoleAuctionSniperDriver(
+                inAuction.HostName, SniperId, SniperPassword, 
+                inAuction.ItemId, 
+                1000
+            );
             mDriver.ShowSniperStatus(SniperStatus.Joining);
         }
 
@@ -54,22 +58,22 @@ namespace AuctionSniper.Test {
         private AuctionSniperConsole mApp;
         private MessageQueue mQueue;
 
-        public ConsoleAuctionSniperDriver(string inHostName, string inId, string inPassword, int inTimeout) {
-            mApp = new AuctionSniperConsole();
-
+        public ConsoleAuctionSniperDriver(string inHostName, string inId, string inPassword, string inAuctionItem, int inTimeout) {
             mQueue = new MessageQueue();
-            mQueue.AssignEvents(mApp.Connection);
-
+            
+            mApp = new AuctionSniperConsole();
+            mApp.BeginJoining += (conn) => {
+                mQueue.AssignEvents(conn);
+            };
             Assert.That(mApp.Status, Is.EqualTo(SniperStatus.Disconnected));
 
             this.JId = TestHelper.ToJId(inId);
 
             mApp.RunShell(
                 inHostName,
-                    new AuctionCredencial {Id = this.JId, Password = inPassword}
+                new AuctionCredencial {Id = this.JId, Password = inPassword},
+                inAuctionItem               
             );
-
-            TestHelper.WaitConnectingTo(mApp.Connection);           
         }
 
         void IAuctionSniperDriver.HasReceivedMessageFromServer() {
@@ -84,8 +88,6 @@ namespace AuctionSniper.Test {
 
         void IAuctionSniperDriver.Dispose() {
             mApp.Terminate();
-
-            TestHelper.WaitDisconnectingTo(mApp.Connection);
 
             Assert.That(mApp.Status, Is.EqualTo(SniperStatus.Disconnected));
         }

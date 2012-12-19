@@ -58,5 +58,9 @@
       <Project>{950B96D0-45E3-46F3-A872-DD9306ECC983}</Project>
       <Name>AuctionSniper.Console</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AuctionSniper.Core\AuctionSniper.Core.csproj">
+      <Project>{12EE2AF1-7742-4743-A0BA-2E740D94C6D2}</Project>
+      <Name>AuctionSniper.Core</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>
