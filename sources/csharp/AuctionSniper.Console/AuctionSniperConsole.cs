@@ -8,7 +8,7 @@ using jabber.protocol.client;
 using AuctionSniper.Core;
 
 namespace AuctionSniper.Console {
-    public class AuctionSniperConsole : IAuctionEventListener {
+    public class AuctionSniperConsole : ISniperListener {
         public static readonly string AuctionResource = "Auction";
         public static readonly string ItemIdAsLogin = "auction-{0}";
 
@@ -29,7 +29,11 @@ namespace AuctionSniper.Console {
         }
 
         private void JoinAuction(JabberClient inConnection, string inItemId) {
-            this.NotToBeGCD = new Chat(this.ToJid(inItemId, inConnection), inConnection, new AuctionMessageTranslator(this));
+            this.NotToBeGCD = new Chat(
+                this.ToJid(inItemId, inConnection), 
+                inConnection, 
+                new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(this))
+            );
 
             if (this.BeginJoining != null) {
                 this.BeginJoining(this.NotToBeGCD.Connection);
@@ -75,11 +79,8 @@ namespace AuctionSniper.Console {
             this.ShowStatus(SniperStatus.Disconnected);
         }
 
-        void IAuctionEventListener.AuctionClosed() {
+        void ISniperListener.SniperLost() {
             this.ShowStatus(SniperStatus.Lost);
-        }
-
-        void IAuctionEventListener.CurrentPrice(int inPrice, int inIncrement) {
         }
 
         public Chat NotToBeGCD { get; private set; }
