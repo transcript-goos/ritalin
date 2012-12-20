@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AuctionMessageTranslateTest.cs" />
+    <Compile Include="AuctionSniperTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AuctionSniper.Core\AuctionSniper.Core.csproj">
