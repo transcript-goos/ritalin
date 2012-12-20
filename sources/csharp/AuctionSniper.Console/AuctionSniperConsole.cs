@@ -15,6 +15,11 @@ namespace AuctionSniper.Console {
         public static readonly string JoinCommandFormat = "SOLVersion: 1.1; Event: PRICE; CurrentPrice: {0}; Increment: {1}; Bidder: {2}";
         public static readonly string BidCommandFormat = "SOLVersion: 1.1; Command: BID; Price: {0}";
 
+        private class NullAuction : IAuction {
+            void IAuction.Bid(int inNewPrice) {
+            }
+        }
+
         public AuctionSniperConsole() {
         }
 
@@ -32,7 +37,7 @@ namespace AuctionSniper.Console {
             this.NotToBeGCD = new Chat(
                 this.ToJid(inItemId, inConnection), 
                 inConnection, 
-                new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(null, this))
+                new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(new NullAuction(), this))
             );
 
             if (this.BeginJoining != null) {
