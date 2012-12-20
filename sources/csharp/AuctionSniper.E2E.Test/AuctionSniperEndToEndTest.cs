@@ -5,8 +5,14 @@ using NUnit.Framework;
 namespace AuctionSniper.Test {
     [TestFixture]
     public class _オークションが開始されてから終わるまでの間のTestSuite {
-        private FakeAuctionServer mAuction = new FakeAuctionServer("item-54321");
-        private ApplicationRunner mRunner = new ApplicationRunner();
+        private FakeAuctionServer mAuction;
+        private ApplicationRunner mRunner;
+
+        [SetUp]
+        public void SetUp() {
+            mAuction = new FakeAuctionServer("item-54321");
+            mRunner = new ApplicationRunner();
+        }
 
         [TearDown]
         public void StopAuction() {
