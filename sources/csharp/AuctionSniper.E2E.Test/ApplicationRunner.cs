@@ -24,6 +24,7 @@ namespace AuctionSniper.Test {
         }
 
         public void HasShownSniperInBidding() {
+            mDriver.HasReceivedMessageFromServer();
             mDriver.ShowSniperStatus(SniperStatus.Bidding);
         }
 

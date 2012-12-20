@@ -73,10 +73,10 @@ namespace AuctionSniper.Test {
         public void ReportPrice(int inPrice, int inInc,  string inBidder) {
             var msg = new Message(new XmlDocument()) {
                 //  ToDo: AuctionSniper.Console.MainClassに強依存するのが気に入らない。後で治るのかこれ？
-                Body = string.Format(AuctionSniperConsole.JoinCommandFormat, inPrice, inInc, inBidder),
+                Body = string.Format(AuctionSniperConsole.ReportCommandFormat, inPrice, inInc, inBidder),
             };
             
-            mChat.SendMessage(msg);             
+            mChat.SendMessage(msg);  
         }
 
         public void AnnounceClosed() {

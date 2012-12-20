@@ -12,8 +12,9 @@ namespace AuctionSniper.Console {
         public static readonly string AuctionResource = "Auction";
         public static readonly string ItemIdAsLogin = "auction-{0}";
 
-        public static readonly string JoinCommandFormat = "SOLVersion: 1.1; Event: PRICE; CurrentPrice: {0}; Increment: {1}; Bidder: {2}";
+        public static readonly string ReportCommandFormat = "SOLVersion: 1.1; Event: PRICE; CurrentPrice: {0}; Increment: {1}; Bidder: {2}";
         public static readonly string BidCommandFormat = "SOLVersion: 1.1; Command: BID; Price: {0}";
+        public static readonly string JoinCommandFormat = "SOLVersion: 1.1; Command: JOIN;}";
 
         private class AuctionImpl : IAuction {
             private Action<int> mCallback;
@@ -110,7 +111,7 @@ namespace AuctionSniper.Console {
         }
 
         void ISniperListener.SniperBidding() {
-
+            this.ShowStatus(SniperStatus.Bidding);
         }
 
         public Chat NotToBeGCD { get; private set; }

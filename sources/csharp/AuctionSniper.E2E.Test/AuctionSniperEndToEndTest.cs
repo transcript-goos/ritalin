@@ -6,11 +6,11 @@ namespace AuctionSniper.Test {
     [TestFixture]
     public class _オークションが開始されてから終わるまでの間のTestSuite {
         private FakeAuctionServer mAuction = new FakeAuctionServer("item-54321");
-        private ApplicationRunner mApp = new ApplicationRunner();
+        private ApplicationRunner mRunner = new ApplicationRunner();
 
         [TearDown]
         public void StopAuction() {
-            mApp.Stop();
+            mRunner.Stop();
             mAuction.Stop();
         } 
 
@@ -21,16 +21,16 @@ namespace AuctionSniper.Test {
             mAuction.StartSellingItem(); 
             // Step 2
             // オークションスナイパー、その商品に入札を始める
-            mApp.StartBiddingIn(mAuction);
+            mRunner.StartBiddingIn(mAuction);
             // Step 3
             // オークションは、オークションスナイパーからのリクエストを受信する
-            mAuction.HasReceivedJoinRequestFrom(mApp.JId);
+            mAuction.HasReceivedJoinRequestFrom(mRunner.JId);
             // Step 4 
             // オークションは、終了を宣言する
             mAuction.AnnounceClosed();
             // Step 5
             // オークションスナイパーは、悪札に失敗したことを表示する
-            mApp.ShowsSniperHasLostAuction();
+            mRunner.ShowsSniperHasLostAuction();
         }
 
         [Test]
@@ -38,21 +38,21 @@ namespace AuctionSniper.Test {
             mAuction.StartSellingItem();
             // Step 1
             //  スナイパーからの参加を待つ
-            mApp.StartBiddingIn(mAuction);
-            mAuction.HasReceivedJoinRequestFrom(mApp.JId);
+            mRunner.StartBiddingIn(mAuction);
+            mAuction.HasReceivedJoinRequestFrom(mRunner.JId);
             // Step 2
             // 現在の価格、次回増額、現在の落札者を通知する
             mAuction.ReportPrice(1000, 98, "other bidder");
             // Step 3
             // 入札中になったかどうかチェックする
-            mApp.HasShownSniperInBidding();
+            mRunner.HasShownSniperInBidding();
             // Step 4
             // スナイパーからの入札を受信したことをチェックする
-            mAuction.HasReceivedBid(1098,  mApp.JId);
+            mAuction.HasReceivedBid(1098,  mRunner.JId);
             // Step 5
             // 落札に失敗したかどうかチェックする
             mAuction.AnnounceClosed();
-            mApp.ShowsSniperHasLostAuction();
+            mRunner.ShowsSniperHasLostAuction();
         }           
     }
 }
