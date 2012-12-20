@@ -48,7 +48,7 @@ namespace AuctionSniper.Test {
         }
 
         public void HasReceivedJoinRequestFrom(JID inJId) {
-            mChat = new Chat(this.ReceiveMessage(inJId, Is.Not.Empty).From, this.Connection, null);
+            mChat = new Chat(this.ReceiveMessage(inJId, Is.Not.Empty).From, this.Connection);
         }
 
         public void HasReceivedBid(int inBidPrice, string inSniperJId) {

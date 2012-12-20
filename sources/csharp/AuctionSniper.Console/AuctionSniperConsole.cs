@@ -15,8 +15,22 @@ namespace AuctionSniper.Console {
         public static readonly string JoinCommandFormat = "SOLVersion: 1.1; Event: PRICE; CurrentPrice: {0}; Increment: {1}; Bidder: {2}";
         public static readonly string BidCommandFormat = "SOLVersion: 1.1; Command: BID; Price: {0}";
 
-        private class NullAuction : IAuction {
-            void IAuction.Bid(int inNewPrice) {
+        private class AuctionImpl : IAuction {
+            private Action<int> mCallback;
+
+            public AuctionImpl(Action<int> inCallback) {
+                mCallback = inCallback;
+            }
+
+            void IAuction.Bid(int inNewPrice) { 
+                if (mCallback != null) {
+                    try {
+                    mCallback(inNewPrice);
+                    }
+                    catch (Exception ex) {
+                        System.Console.WriteLine(ex.StackTrace);
+                    }
+                }
             }
         }
 
@@ -36,9 +50,16 @@ namespace AuctionSniper.Console {
         private void JoinAuction(JabberClient inConnection, string inItemId) {
             this.NotToBeGCD = new Chat(
                 this.ToJid(inItemId, inConnection), 
-                inConnection, 
-                new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(new NullAuction(), this))
+                inConnection
             );
+
+            var auction = new AuctionImpl((price) => {
+                this.NotToBeGCD.SendMessage(
+                    new Message(new XmlDocument()) {Body = string.Format(BidCommandFormat, price)}
+                );
+            });
+
+            this.NotToBeGCD.Translator = new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(auction, this));
 
             if (this.BeginJoining != null) {
                 this.BeginJoining(this.NotToBeGCD.Connection);
