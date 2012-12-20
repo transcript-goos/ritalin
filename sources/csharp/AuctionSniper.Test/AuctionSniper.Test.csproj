@@ -50,6 +50,7 @@
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AuctionMessageTranslateTest.cs" />
     <Compile Include="AuctionSniperTest.cs" />
+    <Compile Include="RhinoMocksCreationExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AuctionSniper.Core\AuctionSniper.Core.csproj">

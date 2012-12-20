@@ -32,7 +32,7 @@ namespace AuctionSniper.Console {
             this.NotToBeGCD = new Chat(
                 this.ToJid(inItemId, inConnection), 
                 inConnection, 
-                new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(this))
+                new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(null, this))
             );
 
             if (this.BeginJoining != null) {
@@ -81,6 +81,10 @@ namespace AuctionSniper.Console {
 
         void ISniperListener.SniperLost() {
             this.ShowStatus(SniperStatus.Lost);
+        }
+
+        void ISniperListener.SniperBidding() {
+
         }
 
         public Chat NotToBeGCD { get; private set; }
