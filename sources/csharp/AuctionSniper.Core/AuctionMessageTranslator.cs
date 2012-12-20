@@ -51,14 +51,13 @@ namespace AuctionSniper.Core {
     }
 
     public class Chat {
-        public Chat(JID inToJId, JabberClient inConnection, IMessageListener inTranslator) {
+        public Chat(JID inToJId, JabberClient inConnection) {
             this.Connection = inConnection;
             this.Connection.OnMessage += (s, m) => {
                 if (this.Translator != null) {
                     this.Translator.ProcessMessage(this, m);
                 }
             };
-            this.Translator = inTranslator;
 
             this.ToJId = inToJId;
         }
@@ -73,7 +72,7 @@ namespace AuctionSniper.Core {
         public JabberClient Connection {get; private set;}
         public JID ToJId {get; private set;}
 
-        public IMessageListener Translator {get; private set;}
+        public IMessageListener Translator {get; set;}
     }
 }
 
