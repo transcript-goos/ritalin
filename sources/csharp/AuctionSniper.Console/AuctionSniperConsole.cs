@@ -26,7 +26,7 @@ namespace AuctionSniper.Console {
             void IAuction.Bid(int inNewPrice) { 
                 if (mCallback != null) {
                     try {
-                    mCallback(inNewPrice);
+                        mCallback(inNewPrice);
                     }
                     catch (Exception ex) {
                         System.Console.WriteLine(ex.StackTrace);
@@ -69,7 +69,9 @@ namespace AuctionSniper.Console {
             inConnection.Connect();
             ConsoleAppHelper.WaitConnectingTo(inConnection);  
 
-            this.NotToBeGCD.SendMessage(new Message(new XmlDocument()) {Body = JoinCommandFormat});
+            this.NotToBeGCD.SendMessage(
+                new Message(new XmlDocument()) {Body = JoinCommandFormat}
+            );
             
             this.ShowStatus(SniperStatus.Joining);
         }
