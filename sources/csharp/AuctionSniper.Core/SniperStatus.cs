@@ -1,6 +1,6 @@
 using System;
 
-namespace AuctionSniper.Console {
+namespace AuctionSniper.Core {
     public enum SniperStatus {
         Disconnected = 0,
         Joining,

@@ -3,6 +3,7 @@ using System;
 using jabber;
 using jabber.protocol.client;
 
+using AuctionSniper.Core;
 using AuctionSniper.Console;
 
 using NUnit.Framework;

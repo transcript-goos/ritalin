@@ -46,7 +46,6 @@
     <Compile Include="Main.cs" />
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="AuctionSniperConsole.cs" />
-    <Compile Include="SniperStatus.cs" />
     <Compile Include="ConsoleAppHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

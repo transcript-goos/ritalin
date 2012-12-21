@@ -21,7 +21,7 @@ namespace AuctionSniper.Core {
             this.Listenr = inListener;
         }
 
-        void IMessageListener.ProcessMessage(Chat inChar, Message inMessage) {
+        public void ProcessMessage(Chat inChar, Message inMessage) {
             var ev = this.UppackEventFrom(inMessage);
 
             switch (ev["Event"]) {
@@ -72,7 +72,7 @@ namespace AuctionSniper.Core {
         public JabberClient Connection {get; private set;}
         public JID ToJId {get; private set;}
 
-        public IMessageListener Translator {get; set;}
+        public AuctionMessageTranslator Translator {get; set;}
     }
 }
 

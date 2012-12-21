@@ -2,15 +2,21 @@ using System;
 
 namespace AuctionSniper.Core {
     public interface ISniperListener {
+        void SniperJoining();
         void SniperLost();
         void SniperBidding();
+        void AuctionDisconnected();
+
+        SniperStatus Status {get;}
     }
 
     public interface IAuction {
         void Join();
         void Bid(int inNewPrice);
+        void Disconnect();
 
         Chat NotToBeGCD { get; }
+        SniperStatus Status {get;}
     }
 
     public class AuctionSniper : IAuctionEventListener {
