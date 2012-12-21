@@ -17,36 +17,44 @@ namespace AuctionSniper.Core {
     }
     
     public class AuctionMessageTranslator : IMessageListener {
+        AuctionEventParser mParser = new AuctionEventParser();
+
         public AuctionMessageTranslator(IAuctionEventListener inListener) {
-            this.Listenr = inListener;
-        }
-
-        public void ProcessMessage(Chat inChar, Message inMessage) {
-            var ev = this.UppackEventFrom(inMessage);
-
-            switch (ev["Event"]) {
-            case "CLOSE":
-                this.Listenr.AuctionClosed();
-                break;
-            case "PRICE":
-                // エラーチェックあまくね？
-                this.Listenr.CurrentPrice(
+            mParser.RegisterAction("CLOSE", (ev) => {
+                inListener.AuctionClosed();
+            });
+            mParser.RegisterAction("PRICE", (ev) => {
+                inListener.CurrentPrice(
                     int.Parse(ev["CurrentPrice"]),
                     int.Parse(ev["Increment"])
                 );
-                break;
-            }
+            });
         }
 
-        public IAuctionEventListener Listenr {get; private set;}
+        public void ProcessMessage(Chat inChar, Message inMessage) {
+            mParser.RunActionFrom(inMessage);
+        }
 
-        private IDictionary<string, string> UppackEventFrom(Message inMessage) {
-            return inMessage.Body
-                .Split(new char[] {';'})
-                .Select(elem => elem.Split(new char[] {':'}).Select(s => s.Trim()).ToList())
-                .Where(elem => elem.Count > 1)
-                .ToDictionary(elem => elem[0], elem => elem[1])
-            ;
+        private class AuctionEventParser {
+            private Dictionary<string, Action<IDictionary<string, string>>> mActions = new Dictionary<string, Action<IDictionary<string, string>>>();
+
+            public void RegisterAction(string inEventType, Action<IDictionary<string, string>> inAction) {
+                mActions[inEventType] = inAction;
+            }
+
+            public void RunActionFrom(Message inMessage) {
+                var ev = inMessage.Body
+                    .Split(new char[] {';'})
+                    .Select(elem => elem.Split(new char[] {':'}).Select(s => s.Trim()).ToList())
+                    .Where(elem => elem.Count > 1)
+                    .ToDictionary(elem => elem[0], elem => elem[1])
+                ;
+
+                Action<IDictionary<string, string>> action;
+                if (mActions.TryGetValue(ev["Event"], out action)) {
+                    action(ev);
+                }
+            }
         }
     }
 
