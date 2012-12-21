@@ -25,8 +25,8 @@ namespace AuctionSniper.Core {
             });
             mParser.RegisterAction("PRICE", (ev) => {
                 inListener.CurrentPrice(
-                    int.Parse(ev["CurrentPrice"]),
-                    int.Parse(ev["Increment"])
+                    ev.IntegerValueOf("CurrentPrice"),
+                    ev.IntegerValueOf("Increment")
                 );
             });
         }
@@ -35,23 +35,45 @@ namespace AuctionSniper.Core {
             mParser.RunActionFrom(inMessage);
         }
 
-        private class AuctionEventParser {
-            private Dictionary<string, Action<IDictionary<string, string>>> mActions = new Dictionary<string, Action<IDictionary<string, string>>>();
+        private class AuctionEvent {
+            private IDictionary<string, string> mResult;
 
-            public void RegisterAction(string inEventType, Action<IDictionary<string, string>> inAction) {
+            public AuctionEvent(IDictionary<string, string> inResult) {
+                mResult = inResult;
+            }
+
+            public string EventType {
+                get {
+                    return this.ValueOf("Event");
+                }
+            }
+
+            public string ValueOf(string inField) {
+                return mResult[inField];
+            }
+
+            public int IntegerValueOf(string inField) {
+                return int.Parse(this.ValueOf(inField));
+            }
+        }
+
+        private class AuctionEventParser {
+            private Dictionary<string, Action<AuctionEvent>> mActions = new Dictionary<string, Action<AuctionEvent>>();
+
+            public void RegisterAction(string inEventType, Action<AuctionEvent> inAction) {
                 mActions[inEventType] = inAction;
             }
 
             public void RunActionFrom(Message inMessage) {
-                var ev = inMessage.Body
+                var ev = new AuctionEvent(inMessage.Body
                     .Split(new char[] {';'})
                     .Select(elem => elem.Split(new char[] {':'}).Select(s => s.Trim()).ToList())
                     .Where(elem => elem.Count > 1)
                     .ToDictionary(elem => elem[0], elem => elem[1])
-                ;
+                );
 
-                Action<IDictionary<string, string>> action;
-                if (mActions.TryGetValue(ev["Event"], out action)) {
+                Action<AuctionEvent> action;
+                if (mActions.TryGetValue(ev.EventType, out action)) {
                     action(ev);
                 }
             }
