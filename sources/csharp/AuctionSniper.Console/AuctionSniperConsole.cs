@@ -104,7 +104,7 @@ namespace AuctionSniper.Console {
             }
 
             void IAuction.Disconnect() {
-                this.NotToBeGCD.Connection.Close();
+                this.NotToBeGCD.Close();
                 ConsoleAppHelper.WaitDisconnectingTo(this.NotToBeGCD.Connection);
 
                 mListener.AuctionDisconnected();
@@ -118,37 +118,37 @@ namespace AuctionSniper.Console {
                 }
             }
         }
-
-        private class SniperStateDisplayer : ISniperListener {
-            void ISniperListener.SniperJoining() {
-                this.ShowStatus(SniperStatus.Joining);
-            }
-
-            void ISniperListener.SniperLost() {
-                this.ShowStatus(SniperStatus.Lost);
-            }
-            
-            void ISniperListener.SniperBidding() {
-                this.ShowStatus(SniperStatus.Bidding);
-            }
-
-            void ISniperListener.AuctionDisconnected() {
-                this.ShowStatus(SniperStatus.Disconnected);
-            }
-
-            private void ShowStatus(SniperStatus inStatus) {
-                this.Status = inStatus;
-                
-                System.Console.WriteLine("status changed to: {0}", inStatus);
-            }
-
-            public SniperStatus Status {get; private set;}
-        }
     }
 
     public struct AuctionCredencial {
         public JID Id {get;set;}
         public string Password {get;set;}
+    }
+
+    internal class SniperStateDisplayer : ISniperListener {
+        void ISniperListener.SniperJoining() {
+            this.ShowStatus(SniperStatus.Joining);
+        }
+        
+        void ISniperListener.SniperLost() {
+            this.ShowStatus(SniperStatus.Lost);
+        }
+        
+        void ISniperListener.SniperBidding() {
+            this.ShowStatus(SniperStatus.Bidding);
+        }
+        
+        void ISniperListener.AuctionDisconnected() {
+            this.ShowStatus(SniperStatus.Disconnected);
+        }
+        
+        private void ShowStatus(SniperStatus inStatus) {
+            this.Status = inStatus;
+            
+            System.Console.WriteLine("status changed to: {0}", inStatus);
+        }
+        
+        public SniperStatus Status {get; private set;}
     }
 }
 

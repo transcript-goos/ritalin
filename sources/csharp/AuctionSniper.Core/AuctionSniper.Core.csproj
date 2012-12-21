@@ -42,6 +42,7 @@
     <Compile Include="AuctionMessageTranslator.cs" />
     <Compile Include="AuctionSniper.cs" />
     <Compile Include="SniperStatus.cs" />
+    <Compile Include="Chat.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

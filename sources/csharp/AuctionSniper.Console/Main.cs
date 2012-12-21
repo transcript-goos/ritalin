@@ -1,5 +1,7 @@
 using System;
 
+using AuctionSniper.Core;
+
 namespace AuctionSniper.Console {
     class MainClass {
         // ex {"ktz.local", "sniper", "sniper", "item-54321"}
