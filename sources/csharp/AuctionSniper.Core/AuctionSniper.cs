@@ -7,7 +7,10 @@ namespace AuctionSniper.Core {
     }
 
     public interface IAuction {
+        void Join();
         void Bid(int inNewPrice);
+
+        Chat NotToBeGCD { get; }
     }
 
     public class AuctionSniper : IAuctionEventListener {

@@ -16,27 +16,33 @@ namespace AuctionSniper.Console {
         public static readonly string BidCommandFormat = "SOLVersion: 1.1; Command: BID; Price: {0}";
         public static readonly string JoinCommandFormat = "SOLVersion: 1.1; Command: JOIN;}";
 
-        private class AuctionImpl : IAuction {
-            private Action<int> mCallback;
+        private class XMPPAuction : IAuction {
+            public XMPPAuction(Chat inChat, ISniperListener inListener) {
+                this.NotToBeGCD = inChat;
+                this.NotToBeGCD.Translator = new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(this, inListener));
+            }
 
-            public AuctionImpl(Action<int> inCallback) {
-                mCallback = inCallback;
+            void IAuction.Join() {
+                this.NotToBeGCD.SendMessage(
+                    new Message(new XmlDocument()) {Body = JoinCommandFormat}
+                );
             }
 
             void IAuction.Bid(int inNewPrice) { 
-                if (mCallback != null) {
-                    try {
-                        mCallback(inNewPrice);
-                    }
-                    catch (Exception ex) {
-                        System.Console.WriteLine(ex.StackTrace);
-                    }
+                try {
+                    this.NotToBeGCD.SendMessage(
+                        new Message(new XmlDocument()) {Body = string.Format(BidCommandFormat, inNewPrice)}
+                    );
+                }
+                catch (Exception ex) {
+                    System.Console.WriteLine(ex.StackTrace);
                 }
             }
+ 
+            public Chat NotToBeGCD { get; private set; }
         }
 
-        public AuctionSniperConsole() {
-        }
+        private IAuction mAuction;
 
         private void ShowStatus(SniperStatus inStatus) {
             this.Status = inStatus;
@@ -49,30 +55,19 @@ namespace AuctionSniper.Console {
         }
 
         private void JoinAuction(JabberClient inConnection, string inItemId) {
-            this.NotToBeGCD = new Chat(
-                this.ToJid(inItemId, inConnection), 
-                inConnection
+            mAuction = new XMPPAuction(
+                new Chat(this.ToJid(inItemId, inConnection), inConnection), this
             );
 
-            var auction = new AuctionImpl((price) => {
-                this.NotToBeGCD.SendMessage(
-                    new Message(new XmlDocument()) {Body = string.Format(BidCommandFormat, price)}
-                );
-            });
-
-            this.NotToBeGCD.Translator = new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(auction, this));
-
             if (this.BeginJoining != null) {
-                this.BeginJoining(this.NotToBeGCD.Connection);
+                this.BeginJoining(mAuction.NotToBeGCD.Connection);
             }
             
             inConnection.Connect();
             ConsoleAppHelper.WaitConnectingTo(inConnection);  
 
-            this.NotToBeGCD.SendMessage(
-                new Message(new XmlDocument()) {Body = JoinCommandFormat}
-            );
-            
+            mAuction.Join();
+
             this.ShowStatus(SniperStatus.Joining);
         }
 
@@ -100,10 +95,10 @@ namespace AuctionSniper.Console {
         }
 
         public void Terminate() {
-            if (! this.NotToBeGCD.Connection.IsAuthenticated) return;
+            if (! mAuction.NotToBeGCD.Connection.IsAuthenticated) return;
 
-            this.NotToBeGCD.Connection.Close();
-            ConsoleAppHelper.WaitDisconnectingTo(this.NotToBeGCD.Connection);
+            mAuction.NotToBeGCD.Connection.Close();
+            ConsoleAppHelper.WaitDisconnectingTo(mAuction.NotToBeGCD.Connection);
 
             this.ShowStatus(SniperStatus.Disconnected);
         }
@@ -116,8 +111,6 @@ namespace AuctionSniper.Console {
             this.ShowStatus(SniperStatus.Bidding);
         }
 
-        public Chat NotToBeGCD { get; private set; }
-        
         public SniperStatus Status {get; private set;}
 
         public event Action<JabberClient> BeginJoining;
