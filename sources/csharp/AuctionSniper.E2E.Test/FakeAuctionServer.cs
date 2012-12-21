@@ -20,7 +20,7 @@ namespace AuctionSniper.Test {
 
         private MessageQueue mQueue = new MessageQueue();
 
-        private Chat mChat;
+        private IChat mChat;
 
         public FakeAuctionServer(string inItemId) {
             this.ItemId = inItemId;

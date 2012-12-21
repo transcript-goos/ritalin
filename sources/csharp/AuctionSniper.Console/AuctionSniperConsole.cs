@@ -77,7 +77,7 @@ namespace AuctionSniper.Console {
         private class XMPPAuction : IAuction {
             private ISniperListener mListener;
 
-            public XMPPAuction(Chat inChat, ISniperListener inListener) {
+            public XMPPAuction(IChat inChat, ISniperListener inListener) {
                 this.NotToBeGCD = inChat;
                 this.NotToBeGCD.Translator = new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(this, inListener));
 
@@ -110,7 +110,7 @@ namespace AuctionSniper.Console {
                 mListener.AuctionDisconnected();
             }
 
-            public Chat NotToBeGCD { get; private set; }
+            public IChat NotToBeGCD { get; private set; }
 
             public SniperStatus Status {
                 get {

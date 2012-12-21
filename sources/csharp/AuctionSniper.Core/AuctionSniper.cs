@@ -15,7 +15,7 @@ namespace AuctionSniper.Core {
         void Bid(int inNewPrice);
         void Disconnect();
 
-        Chat NotToBeGCD { get; }
+        IChat NotToBeGCD { get; }
         SniperStatus Status {get;}
     }
 

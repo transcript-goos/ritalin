@@ -15,7 +15,16 @@ namespace AuctionSniper.Core {
     public interface IMessageListener {
         void ProcessMessage(Chat inChat, Message inMessage);
     }
-    
+
+    public interface IChat {
+        void SendMessage(Message inMessage);
+        
+        JabberClient Connection {get;}
+        JID ToJId {get;}
+        
+        AuctionMessageTranslator Translator {get; set;}
+    }
+
     public class AuctionMessageTranslator : IMessageListener {
         AuctionEventParser mParser = new AuctionEventParser();
 
@@ -80,7 +89,7 @@ namespace AuctionSniper.Core {
         }
     }
 
-    public class Chat {
+    public class Chat : IChat {
         public Chat(JID inToJId, JabberClient inConnection) {
             this.Connection = inConnection;
             this.Connection.OnMessage += (s, m) => {
@@ -92,7 +101,7 @@ namespace AuctionSniper.Core {
             this.ToJId = inToJId;
         }
 
-        public void SendMessage(Message inMessage) {
+        void IChat.SendMessage(Message inMessage) {
             inMessage.Type = MessageType.chat;
             inMessage.To = this.ToJId;
 
