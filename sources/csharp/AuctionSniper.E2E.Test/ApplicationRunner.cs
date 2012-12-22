@@ -40,7 +40,8 @@ namespace AuctionSniper.Test {
         }
 
         public void ShowsSniperHasWonAuction() {
-            throw new NotImplementedException();
+            mDriver.HasReceivedMessageFromServer();
+            mDriver.ShowSniperStatus(SniperStatus.Won);
         }
 
         public void Stop() {

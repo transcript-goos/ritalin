@@ -6,6 +6,7 @@ namespace AuctionSniper.Core {
         Joining,
         Bidding,
         Winning,
+        Won,
         Lost,
     }
 }
