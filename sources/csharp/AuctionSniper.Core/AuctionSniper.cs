@@ -6,6 +6,7 @@ namespace AuctionSniper.Core {
         void SniperLost();
         void SniperBidding();
         void SniperWinning();
+        void SniperWon();
         void AuctionDisconnected();
 
         SniperStatus Status {get;}

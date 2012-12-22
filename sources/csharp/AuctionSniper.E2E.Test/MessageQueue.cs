@@ -14,13 +14,10 @@ namespace AuctionSniper.Test {
         
         public void AssignEvents(JabberClient inConn) {
             inConn.OnMessage += (s, msg) => {
-                //                if (msg.Body != null) 
-                {
-                    lock (mLock) {
-                        mMessages.Enqueue(msg);
-                        
-                        Monitor.PulseAll(mLock);
-                    }
+                lock (mLock) {
+                    mMessages.Enqueue(msg);
+                    
+                    Monitor.PulseAll(mLock);
                 }
             };
         }

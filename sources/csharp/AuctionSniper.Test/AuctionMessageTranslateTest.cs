@@ -12,7 +12,7 @@ using Rhino.Mocks;
 namespace AuctionSniper.Test {
     [TestFixture]
     public class _オークションとのメッセージのやり取りを翻訳するところに関するTestSuite {
-        private static readonly IChat UnusedChat;
+        private static readonly IChat UnusedChat = null;
         private static readonly JID SniperId = TestHelper.ToJId("sniper");
 
         private IAuctionEventListener mListener;
