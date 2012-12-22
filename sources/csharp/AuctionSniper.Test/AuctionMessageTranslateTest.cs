@@ -49,14 +49,30 @@ namespace AuctionSniper.Test {
             mListener.Expect(listener =>  {
                 listener.CurrentPrice(192, 7, PriceSource.FromOtherBidder);
             })
-            .Repeat.Times(1);
-
+                .Repeat.Times(1);
+            
             var m = new Message(new XmlDocument()) {
                 Body = "SOLVersion: 1.1; Event: PRICE; CurrentPrice: 192; Increment: 7; Bidder: Someone else;",
             };
-
+            
             mTranslator.ProcessMessage(UnusedChat, m);
+            
+            mListener.VerifyAllExpectations();
+        }
 
+        [Test]
+        public void _Sniperによって価格が変更された場合に新しい価格の通知を受ける() {
+            mListener.Expect(listener =>  {
+                listener.CurrentPrice(234, 5, PriceSource.FromSniper);
+            })
+                .Repeat.Times(1);
+            
+            var m = new Message(new XmlDocument()) {
+                Body = string.Format("SOLVersion: 1.1; Event: PRICE; CurrentPrice: 234; Increment: 5; Bidder: {0};", SniperId.User),
+            };
+            
+            mTranslator.ProcessMessage(UnusedChat, m);
+            
             mListener.VerifyAllExpectations();
         }
     }
