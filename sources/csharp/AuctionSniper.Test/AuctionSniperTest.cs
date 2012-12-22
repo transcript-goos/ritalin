@@ -42,7 +42,7 @@ namespace AuctionSniper.Test {
             .Repeat.AtLeastOnce();
 
             IAuctionEventListener sniper = new AuctionSniper.Core.AuctionSniper(auction, listener);
-            sniper.CurrentPrice(price, inc);
+            sniper.CurrentPrice(price, inc, PriceSource.FromOtherBidder);
 
             mocker.VerifyAll();
         }

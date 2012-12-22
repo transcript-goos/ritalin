@@ -7,31 +7,41 @@ using jabber.client;
 using jabber.protocol.client;
 
 namespace AuctionSniper.Core {
+    public enum PriceSource {
+        Unknown = 0,
+        FromSniper,
+        FromOtherBidder,
+    }
+    
     public interface IAuctionEventListener {
         void AuctionClosed();
-        void CurrentPrice(int inPrice, int inIncrement);
+        void CurrentPrice(int inPrice, int inIncrement, PriceSource inBidderSource);
     }
     
     public interface IMessageListener {
-        void ProcessMessage(Chat inChat, Message inMessage);
+        void ProcessMessage(IChat inChat, Message inMessage);
     }
 
     public class AuctionMessageTranslator : IMessageListener {
-        AuctionEventParser mParser = new AuctionEventParser();
+        private AuctionEventParser mParser = new AuctionEventParser();
+        private JID mSniperId;
 
-        public AuctionMessageTranslator(IAuctionEventListener inListener) {
+        public AuctionMessageTranslator(JID inSniperJId, IAuctionEventListener inListener) {
+            mSniperId = inSniperJId;
+
             mParser.RegisterAction("CLOSE", (ev) => {
                 inListener.AuctionClosed();
             });
             mParser.RegisterAction("PRICE", (ev) => {
                 inListener.CurrentPrice(
                     ev.IntegerValueOf("CurrentPrice"),
-                    ev.IntegerValueOf("Increment")
+                    ev.IntegerValueOf("Increment"),
+                    ev.PriceSourceFrom(mSniperId)
                 );
             });
         }
 
-        public void ProcessMessage(Chat inChar, Message inMessage) {
+        public void ProcessMessage(IChat inChar, Message inMessage) {
             mParser.RunActionFrom(inMessage);
         }
 
@@ -46,6 +56,10 @@ namespace AuctionSniper.Core {
                 get {
                     return this.ValueOf("Event");
                 }
+            }
+
+            public PriceSource PriceSourceFrom(JID inSniperId) {
+                return this.ValueOf("Bidder") == inSniperId.User ? PriceSource.FromSniper : PriceSource.FromOtherBidder;
             }
 
             public string ValueOf(string inField) {

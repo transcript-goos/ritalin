@@ -51,6 +51,9 @@
     <Compile Include="AuctionMessageTranslateTest.cs" />
     <Compile Include="AuctionSniperTest.cs" />
     <Compile Include="RhinoMocksCreationExtensions.cs" />
+    <Compile Include="..\AuctionSniper.E2E.Test\TestHelper.cs">
+      <Link>TestHelper.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AuctionSniper.Core\AuctionSniper.Core.csproj">

@@ -1,6 +1,7 @@
 using System;
 using System.Xml;
 
+using jabber;
 using jabber.protocol.client;
 
 using AuctionSniper.Core;
@@ -11,17 +12,16 @@ using Rhino.Mocks;
 namespace AuctionSniper.Test {
     [TestFixture]
     public class _オークションとのメッセージのやり取りを翻訳するところに関するTestSuite {
-        private static readonly Chat UnusedChat = null; 
-
+        private static readonly IChat UnusedChat;
+        private static readonly JID SniperId = TestHelper.ToJId("sniper");
 
         private IAuctionEventListener mListener;
         private IMessageListener mTranslator;
 
-
         [SetUp]
         protected void SetUp() {
             mListener = MockRepository.GenerateMock<IAuctionEventListener>();
-            mTranslator = new AuctionMessageTranslator(mListener);
+            mTranslator = new AuctionMessageTranslator(SniperId, mListener);
         }
 
         private Action VoidAction() {
@@ -45,9 +45,9 @@ namespace AuctionSniper.Test {
         }
 
         [Test]
-        public void _価格が変更された場合に新しい価格の通知を受ける() {
+        public void _他の入札者によって価格が変更された場合に新しい価格の通知を受ける() {
             mListener.Expect(listener =>  {
-                listener.CurrentPrice(192, 7);
+                listener.CurrentPrice(192, 7, PriceSource.FromOtherBidder);
             })
             .Repeat.Times(1);
 

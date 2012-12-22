@@ -33,7 +33,7 @@ namespace AuctionSniper.Core {
 
         }
 
-        void IAuctionEventListener.CurrentPrice(int inPrice, int inIncrement) {
+        void IAuctionEventListener.CurrentPrice(int inPrice, int inIncrement, PriceSource inBidderSource) {
             mAuction.Bid(inPrice+inIncrement);
             mListener.SniperBidding();
         }

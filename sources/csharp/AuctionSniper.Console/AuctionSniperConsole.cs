@@ -79,7 +79,10 @@ namespace AuctionSniper.Console {
 
             public XMPPAuction(IChat inChat, ISniperListener inListener) {
                 this.NotToBeGCD = inChat;
-                this.NotToBeGCD.Translator = new AuctionMessageTranslator(new AuctionSniper.Core.AuctionSniper(this, inListener));
+                this.NotToBeGCD.Translator = new AuctionMessageTranslator(
+                    null,
+                    new AuctionSniper.Core.AuctionSniper(this, inListener)
+                );
 
                 mListener = inListener;
             }
