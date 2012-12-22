@@ -1,13 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
+using System.Linq;
 
 using jabber.client;
 using jabber.protocol.client;
 
 namespace AuctionSniper.Test {
     internal class MessageQueue {
-        private ConcurrentQueue<Message> mMessages = new ConcurrentQueue<Message>();
+        private Queue<Message> mMessages = new Queue<Message>();
         private object mLock = new object();
         
         public void AssignEvents(JabberClient inConn) {
@@ -30,7 +32,9 @@ namespace AuctionSniper.Test {
             
             while (DateTime.Now < endTime) {
                 lock (mLock) {                
-                    if (mMessages.TryDequeue(out outItem)) {
+//                    if (mMessages.TryDequeue(out outItem)) {
+                    if (mMessages.Any()) {
+                        outItem = mMessages.Dequeue();
                         return true;
                     }
                     

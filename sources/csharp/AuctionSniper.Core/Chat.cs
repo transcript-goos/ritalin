@@ -10,6 +10,7 @@ namespace AuctionSniper.Core {
         void Close();
         
         JabberClient Connection {get;}
+        JID FromId {get;}
         JID ToJId {get;}
         
         AuctionMessageTranslator Translator {get; set;}
@@ -25,8 +26,17 @@ namespace AuctionSniper.Core {
                     this.Translator.ProcessMessage(this, m);
                 }
             };
-            
+
+            this.Connection.OnError += (s, ex) => {
+                if (this.Translator != null) {
+                }
+            };
+
             this.ToJId = inToJId;
+            this.FromId = new JID(
+                this.Connection.User, this.Connection.NetworkHost, this.Connection.Resource
+            );
+
         }
         
         void IChat.SendMessage(Message inMessage) {
@@ -46,7 +56,8 @@ namespace AuctionSniper.Core {
         
         public JabberClient Connection {get; private set;}
         public JID ToJId {get; private set;}
-        
+        public JID FromId {get; private set;}
+
         public AuctionMessageTranslator Translator {get; set;}
         
         public event Action<JabberClient> ChatClosing;
