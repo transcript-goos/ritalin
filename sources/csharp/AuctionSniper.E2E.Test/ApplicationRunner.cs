@@ -30,7 +30,8 @@ namespace AuctionSniper.Test {
         }
 
         public void HasShownSniperInWinning() {
-            throw new NotImplementedException();
+            mDriver.HasReceivedMessageFromServer();
+            mDriver.ShowSniperStatus(SniperStatus.Winning);
         }
 
         public void ShowsSniperHasLostAuction() {

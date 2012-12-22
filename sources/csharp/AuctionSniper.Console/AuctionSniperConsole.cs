@@ -23,14 +23,14 @@ namespace AuctionSniper.Console {
         }
 
         private void JoinAuction(JabberClient inConnection, string inItemId) {
-            if (this.BeginJoining != null) {
-                this.BeginJoining(inConnection);
-            }
-            
             mAuction = new XMPPAuction(
                 new Chat(this.ToJid(inItemId, inConnection), inConnection), new SniperStateDisplayer()
             );
 
+            if (this.BeginJoining != null) {
+                this.BeginJoining(inConnection);
+            }
+            
             inConnection.Connect();
             ConsoleAppHelper.WaitConnectingTo(inConnection);  
 
@@ -140,7 +140,11 @@ namespace AuctionSniper.Console {
         void ISniperListener.SniperBidding() {
             this.ShowStatus(SniperStatus.Bidding);
         }
-        
+
+        void ISniperListener.SniperWinning() {
+            this.ShowStatus(SniperStatus.Winning);
+        }
+
         void ISniperListener.AuctionDisconnected() {
             this.ShowStatus(SniperStatus.Disconnected);
         }

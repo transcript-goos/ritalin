@@ -74,7 +74,7 @@ namespace AuctionSniper.Test {
 
             // Step 1
             // Sniperから価格の上乗せが通知された
-            mAuction.ReportPrice(1098, 97, mRunner.JId);
+            mAuction.ReportPrice(1098, 97, mRunner.JId.User);
             // Step 2
             // ただいま一位入札中でござる
             mRunner.HasShownSniperInWinning();

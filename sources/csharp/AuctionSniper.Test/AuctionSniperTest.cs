@@ -46,6 +46,23 @@ namespace AuctionSniper.Test {
 
             mocker.VerifyAll();
         }
+
+        [Test]
+        public void _Sniperが新しい金額を提示したら一位入札状態として報告を上げる() {
+            var mocker = new MockRepository();
+
+            var listener = mocker.GenerateMockHelper<ISniperListener>();
+            listener.Expect(x => {
+                x.SniperWinning();
+            })
+            .Repeat.AtLeastOnce();
+
+            var auction = mocker.GenerateMockHelper<IAuction>();
+            IAuctionEventListener sniper = new AuctionSniper.Core.AuctionSniper(auction, listener);
+            sniper.CurrentPrice(123, 45, PriceSource.FromSniper);
+            
+            mocker.VerifyAll();
+        }
     }
 }
 

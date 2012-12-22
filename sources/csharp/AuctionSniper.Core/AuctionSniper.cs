@@ -5,6 +5,7 @@ namespace AuctionSniper.Core {
         void SniperJoining();
         void SniperLost();
         void SniperBidding();
+        void SniperWinning();
         void AuctionDisconnected();
 
         SniperStatus Status {get;}
@@ -34,8 +35,16 @@ namespace AuctionSniper.Core {
         }
 
         void IAuctionEventListener.CurrentPrice(int inPrice, int inIncrement, PriceSource inBidderSource) {
-            mAuction.Bid(inPrice+inIncrement);
-            mListener.SniperBidding();
+            switch (inBidderSource) {
+            case PriceSource.FromSniper:
+                mListener.SniperWinning();
+                break;
+
+            case PriceSource.FromOtherBidder:  
+                mAuction.Bid(inPrice+inIncrement);                
+                mListener.SniperBidding();
+                break;
+            }
         }
     }
 }

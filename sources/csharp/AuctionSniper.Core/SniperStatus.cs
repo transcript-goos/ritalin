@@ -5,6 +5,7 @@ namespace AuctionSniper.Core {
         Disconnected = 0,
         Joining,
         Bidding,
+        Winning,
         Lost,
     }
 }
