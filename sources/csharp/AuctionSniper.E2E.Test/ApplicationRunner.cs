@@ -29,9 +29,17 @@ namespace AuctionSniper.Test {
             mDriver.ShowSniperStatus(SniperStatus.Bidding);
         }
 
+        public void HasShownSniperInWinning() {
+            throw new NotImplementedException();
+        }
+
         public void ShowsSniperHasLostAuction() {
             mDriver.HasReceivedMessageFromServer();
             mDriver.ShowSniperStatus(SniperStatus.Lost);
+        }
+
+        public void ShowsSniperHasWonAuction() {
+            throw new NotImplementedException();
         }
 
         public void Stop() {

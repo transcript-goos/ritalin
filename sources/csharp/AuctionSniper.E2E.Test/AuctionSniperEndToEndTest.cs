@@ -59,7 +59,30 @@ namespace AuctionSniper.Test {
             // 落札に失敗したかどうかチェックする
             mAuction.AnnounceClosed();
             mRunner.ShowsSniperHasLostAuction();
-        }           
+        }   
+
+        [Test]
+        public void _一位入札中これは勝つる() {
+            mAuction.StartSellingItem();
+
+            mRunner.StartBiddingIn(mAuction);
+            mAuction.HasReceivedJoinRequestFrom(mRunner.JId);
+            mAuction.ReportPrice(1000, 98, "other bidder");
+
+            mRunner.HasShownSniperInBidding();
+            mAuction.HasReceivedBid(1098,  mRunner.JId);
+
+            // Step 1
+            // Sniperから価格の上乗せが通知された
+            mAuction.ReportPrice(1098, 97, mRunner.JId);
+            // Step 2
+            // ただいま一位入札中でござる
+            mRunner.HasShownSniperInWinning();
+            // Step 3
+            // 落札できたかどうかチェックする
+            mAuction.AnnounceClosed();
+            mRunner.ShowsSniperHasWonAuction();
+        }
     }
 }
 
