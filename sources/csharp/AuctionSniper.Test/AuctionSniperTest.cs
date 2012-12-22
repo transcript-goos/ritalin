@@ -108,10 +108,22 @@ namespace AuctionSniper.Test {
             
             var listener = mockery.GenerateMockHelper<ISniperListener>();
             listener.Expect(x => {
+                x.SniperBidding();
+            })
+            .WhenCalled((m) => status = SniperStatus.Bidding)
+            .Repeat.Never();
+            
+            listener.Expect(x => {
+                x.SniperWinning();
+            })
+            .WhenCalled((m) => status = SniperStatus.Winning)
+            .Repeat.AtLeastOnce();
+            
+            listener.Expect(x => {
                 x.SniperWon();
             })
             .WhenCalled((m) => status = SniperStatus.Won)
-            .Repeat.AtLeastOnce();
+            .Repeat.Once();
 
             listener.Expect(x => {
                 x.SniperLost();

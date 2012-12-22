@@ -31,8 +31,12 @@ namespace AuctionSniper.Core {
         }
 
         void IAuctionEventListener.AuctionClosed() {
-            mListener.SniperLost();
-
+            if (mListener.Status == SniperStatus.Winning) {
+                mListener.SniperWon();
+            }
+            else {
+                mListener.SniperLost();
+            }
         }
 
         void IAuctionEventListener.CurrentPrice(int inPrice, int inIncrement, PriceSource inBidderSource) {
